@@ -58,6 +58,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
+
 import Regular from '~/components/buttons/regular.vue'
 import '@/assets/transition/list.css'
 import '@/assets/transition/popin.css'
