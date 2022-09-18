@@ -16,10 +16,16 @@ export default {
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [],
-
+  ssr: true,
+  target: 'server',
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
-  serverMiddleware: ['~api/index'],
+  serverMiddleware: [
+    {
+      path: '/api',
+      handler: '~api/index.ts',
+    },
+  ],
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
     // https://go.nuxtjs.dev/typescript

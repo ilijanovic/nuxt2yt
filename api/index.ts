@@ -6,7 +6,4 @@ let app: Express = express()
 
 app.use(getRoutes)
 app.use(express.json(), postRoutes)
-export default {
-  path: '/api/',
-  handler: app,
-}
+export default app
