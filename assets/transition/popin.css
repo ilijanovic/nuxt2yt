@@ -1,0 +1,13 @@
+.popin-enter,
+.popin-leave-to
+
+/* .popin-leave-active below version 2.1.8 */
+    {
+    opacity: 0;
+    transform: scale(0.98);
+}
+
+.popin-leave-active,
+.popin-enter-active {
+    transition: all 500ms;
+}
