@@ -1,5 +1,6 @@
 <template>
   <div class="flex mx-auto flex-col gap-2">
+
     <small class="text-gray-500 text-center">Switch between single download or list download</small>
     <div class="flex justify-center gap-2">
       <i @click="list = false" :class="{ active: !list }"
@@ -63,8 +64,19 @@ import Regular from '~/components/buttons/regular.vue'
 import '@/assets/transition/list.css'
 import '@/assets/transition/popin.css'
 export default Vue.extend({
+
   name: 'IndexPage',
   layout: 'default',
+  head() {
+    return {
+      title: "Free youtube converter",
+      meta: [{
+        hid: 'description',
+        name: 'description',
+        content: 'Use our free tool to download any YouTube video you want. Download MP4 or MP3 youtube videos for free'
+      }]
+    }
+  },
   data() {
     return {
       loading: false,

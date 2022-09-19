@@ -41,9 +41,13 @@ export default {
     '@nuxtjs/axios',
     // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
+    '@nuxtjs/google-adsense',
   ],
   googleAnalytics: {
     id: 'UA-222785513-2',
+  },
+  'google-adsense': {
+    id: 'ca-pub-7999730286556826',
   },
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
