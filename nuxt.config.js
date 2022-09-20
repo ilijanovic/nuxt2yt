@@ -42,6 +42,8 @@ export default {
     // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
     '@nuxtjs/google-adsense',
+    '@nuxtjs/sitemap',
+    '@nuxtjs/robots',
   ],
   googleAnalytics: {
     id: 'UA-222785513-2',
