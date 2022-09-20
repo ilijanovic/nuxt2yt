@@ -1,10 +1,10 @@
 <template>
   <div>
     <div class="p-5 border-b shadow">
-      <h1 class="bold text-3xl">Free youtube converter</h1>
-      <small class="text-gray-500">We make downloading videos from YouTube easy and fast.</small>
+      <h1 class="bold text-3xl">Easy video downloader</h1>
+      <small class="text-gray-600">We make downloading videos from YouTube easy and fast.</small>
     </div>
-    <div class="max-w-3xl py-5 mx-auto">
+    <div class="max-w-3xl p-2 py-5 mx-auto">
       <nuxt></nuxt>
     </div>
   </div>
@@ -18,7 +18,7 @@ export default Vue.extend({
       structuredData: {
         "@context": "https://schema.org",
         "@type": "SoftwareApplication",
-        "name": "Free youtube downloader",
+        "name": "Easy video downloader",
         "applicationCategory": "WebApplication",
         "offers": {
           "@type": "Offer",
@@ -29,7 +29,9 @@ export default Vue.extend({
     }
   },
   head() {
+
     return {
+
       script: [{ type: 'application/ld+json', json: this.structuredData }]
     }
   },

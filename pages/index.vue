@@ -1,7 +1,7 @@
 <template>
   <div class="flex mx-auto flex-col gap-2">
 
-    <small class="text-gray-500 text-center">Switch between single download or list download</small>
+    <small class="text-gray-600 text-center">Switch between single download or list download</small>
     <div class="flex justify-center gap-2">
       <i @click="list = false" :class="{ active: !list }"
         class="fa-solid fa-download border hover:bg-gray-100 rounded p-5 cursor-pointer"></i>
@@ -10,7 +10,7 @@
     </div>
     <transition name="popin" mode="out-in">
       <div class="flex flex-col gap-2" key="1" v-if="!list">
-        <small class="text-gray-500 text-center">Type in your video URL you want to download</small>
+        <small class="text-gray-600 text-center">Type in your video URL you want to download</small>
         <div class="flex justify-center gap-2">
           <input class="border rounded p-3 w-full outline-none" v-model="link" type="text" />
           <Regular @click.native="check" :disabled="loading" :loading="loading">Check</Regular>
@@ -26,13 +26,13 @@
         </transition>
       </div>
       <div class="flex flex-col gap-2" key="2" v-else>
-        <p>Max: {{ links.length }} / {{ max }}</p>
+        <p class="text-gray-600">Max: {{ links.length }} / {{ max }}</p>
         <div class="flex flex-col justify-center gap-2">
           <transition-group name="list">
             <div :key="l.key" v-for="l in links">
               <div class="flex items-center justify-between">
                 <div class="flex flex-col gap-2">
-                  <p>Title: {{ l.title }}</p>
+                  <p class="text-gray-600">Title: {{ l.title }}</p>
                   <div>
                     <i @click="l.format = 'mp3'" :class="{ active: l.format === 'mp3' }"
                       class="fa-solid fa-volume-high border hover:bg-gray-100 rounded p-2 cursor-pointer"></i>
@@ -54,6 +54,44 @@
         </div>
       </div>
     </transition>
+    <div class="md:flex gap-4">
+      <div class="border my-2 w-full rounded flex items-center flex-col p-4 justify-center">
+        <div class="border rounded-full w-16  h-16 flex justify-center items-center">
+          <i class="fa-solid fa-arrow-down text-gray-600 text-3xl"></i>
+        </div>
+
+        <h3 class="font-bold text-gray-700">Automatic</h3>
+        <p class="text-gray-600">Copy and paste the youtube URL, click on check and download it!</p>
+      </div>
+      <div class="border my-2 w-full rounded flex items-center flex-col p-4 justify-center">
+        <div class="border rounded-full w-16  h-16 flex justify-center items-center">
+          <i class="fa-solid fa-user-slash text-gray-600 text-3xl"></i>
+
+        </div>
+
+        <h3 class="font-bold text-gray-700">No registration</h3>
+        <p class="text-gray-600">No registration needed to use this tool </p>
+      </div>
+      <div class="border my-2 w-full rounded flex items-center flex-col p-4 justify-center">
+        <div class="border rounded-full w-16  h-16 flex justify-center items-center">
+
+          <i class="fa-solid fa-list  text-gray-600 text-3xl"></i>
+        </div>
+
+        <h3 class="font-bold text-gray-700">Multiple downloads</h3>
+        <p class="text-gray-600">Switch to list view and download multiple MP4 or MP3 files at once!</p>
+      </div>
+
+    </div>
+    <div class="border rounded p-4">
+      <p class="text-gray-600">Easy video downloader is the fastest Youtube Downloader tool that allows you to easily
+        convert and download
+        videos and audios
+        from youtube for free. Easy video downloader is THE tool to download
+        youtube
+        videos without any need for registration. We support audio and video formats like MP3, MP4, and the most amazing
+        thing, it's completely free.</p>
+    </div>
   </div>
 </template>
 
@@ -69,13 +107,15 @@ export default Vue.extend({
   layout: 'default',
   head() {
     return {
-      title: "Free youtube converter",
-      
-      meta: [{
-        hid: 'description',
-        name: 'description',
-        content: 'Use our free tool to download any YouTube video you want. Download MP4 or MP3 youtube videos for free'
-      }]
+      title: "Easy video downloader - Download your favourite video as MP4 or MP3 easy and fast",
+
+      meta: [
+
+        {
+          hid: 'description',
+          name: 'description',
+          content: 'Use our free tool to download any YouTube video you want. Download MP4 or MP3 youtube videos for free'
+        }]
     }
   },
   data() {
