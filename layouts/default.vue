@@ -12,5 +12,26 @@
 <script lang="ts">
 import '@fortawesome/fontawesome-free/css/all.css'
 import Vue from 'vue'
-export default Vue.extend()
+export default Vue.extend({
+  data() {
+    return {
+      structuredData: {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Free youtube downloader",
+        "applicationCategory": "WebApplication",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        }
+      }
+    }
+  },
+  head() {
+    return {
+      script: [{ type: 'application/ld+json', json: this.structuredData }]
+    }
+  },
+})
 </script>

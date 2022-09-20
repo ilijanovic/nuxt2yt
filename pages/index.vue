@@ -70,6 +70,7 @@ export default Vue.extend({
   head() {
     return {
       title: "Free youtube converter",
+      
       meta: [{
         hid: 'description',
         name: 'description',
