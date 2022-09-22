@@ -52,6 +52,10 @@ export default {
     '@nuxtjs/sitemap',
     '@nuxtjs/robots',
   ],
+  robots: {
+    UserAgent: '*',
+    Disallow: '/api/',
+  },
   googleAnalytics: {
     id: 'UA-222785513-2',
   },
