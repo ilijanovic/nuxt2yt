@@ -26,3 +26,7 @@ export function string_to_slug(str: string) {
 
   return str
 }
+
+export function toHHMMSS(seconds: number) {
+  return new Date(seconds * 1000).toISOString().slice(11, 19)
+}

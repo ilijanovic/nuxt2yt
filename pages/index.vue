@@ -191,6 +191,13 @@ export default Vue.extend({
       })
     },
     async mp4(event: any, link: string) {
+      //@ts-ignore
+      this.$ga.event({
+        eventCategory: 'category',
+        eventAction: 'action',
+        eventLabel: 'mp4_download',
+        eventValue: 1
+      })
       try {
         let a = document.createElement('a')
         if (!link) {
@@ -201,6 +208,13 @@ export default Vue.extend({
       } catch (err) { }
     },
     async mp3(event: any, link: string) {
+      //@ts-ignore
+      this.$ga.event({
+        eventCategory: 'category',
+        eventAction: 'action',
+        eventLabel: 'mp3_download',
+        eventValue: 1
+      })
       try {
         let a = document.createElement('a')
         if (!link) {
@@ -216,7 +230,13 @@ export default Vue.extend({
     },
     async check() {
       this.loading = true
-
+      //@ts-ignore
+      this.$ga.event({
+        eventCategory: 'category',
+        eventAction: 'action',
+        eventLabel: 'video_check',
+        eventValue: 1
+      })
       try {
         let result = await this.$axios.$post('/api/check', {
           link: this.link,
