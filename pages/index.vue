@@ -31,13 +31,15 @@
           <transition-group name="list">
             <div :key="l.key" v-for="l in links">
               <div class="flex items-center justify-between">
-                <div class="flex flex-col gap-2">
+                <div class="flex w-full flex-col gap-2">
                   <p class="text-gray-600">Title: {{ l.title }}</p>
-                  <div>
+                  <div class="flex gap-2 w-full">
                     <i @click="l.format = 'mp3'" :class="{ active: l.format === 'mp3' }"
                       class="fa-solid fa-volume-high border hover:bg-gray-100 rounded p-2 cursor-pointer"></i>
                     <i @click="l.format = 'mp4'" :class="{ active: l.format === 'mp4' }"
                       class="fa-solid fa-video border hover:bg-gray-100 rounded p-2 cursor-pointer"></i>
+                    <i @click="remove(l)"
+                      class="fa-solid flex fa-trash border ml-auto hover:bg-red-200 active:bg-red-500 rounded p-2 cursor-pointer"></i>
                   </div>
                 </div>
                 <img v-if="l.thumbnail" :src="l.thumbnail" class="h-14 w-14 max-w-xs object-cover" />
@@ -137,6 +139,13 @@ export default Vue.extend({
     }
   },
   methods: {
+    remove(l: any) {
+      let index = this.links.findIndex(link => link.key === l.key)
+
+      if (index !== -1) {
+        this.links.splice(index, 1)
+      }
+    },
     makeid(length: number) {
       var result = ''
       var characters =
