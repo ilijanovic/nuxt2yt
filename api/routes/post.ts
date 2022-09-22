@@ -1,13 +1,13 @@
 import { Router } from 'express'
 import fs from 'fs'
 import ytdl from 'ytdl-core'
-import { string_to_slug, toHHMMSS } from '../utils'
+import { isYoutubeLink, string_to_slug, toHHMMSS } from '../utils'
 import ffmpeg from 'fluent-ffmpeg'
 let router = Router()
 
 router.post('/check', async (req, res) => {
   let { link } = req.body
-  if (!link.startsWith('https://youtube.com')) {
+  if (!isYoutubeLink(link)) {
     return res.status(400).json({ message: 'This domain is not youtube' })
   }
   try {
@@ -23,7 +23,7 @@ router.post('/check', async (req, res) => {
 router.get('/download/:link/:format', async (req, res) => {
   let { link, format } = req.params
   let decodedLink = decodeURIComponent(link)
-  if (!decodedLink.startsWith('https://youtube.com')) {
+  if (!isYoutubeLink(decodedLink)) {
     return res.status(400).json({ message: 'This domain is not youtube' })
   }
   try {
@@ -52,7 +52,7 @@ router.get('/download/:link/:format', async (req, res) => {
 router.get('/cut/:link/:format/:start/:end', async (req, res) => {
   let { link, format, start, end } = req.params
   let decodedLink = decodeURIComponent(link)
-  if (!decodedLink.startsWith('https://youtube.com')) {
+  if (!isYoutubeLink(decodedLink)) {
     return res.status(400).json({ message: 'This domain is not youtube' })
   }
   try {

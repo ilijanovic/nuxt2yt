@@ -30,3 +30,12 @@ export function string_to_slug(str: string) {
 export function toHHMMSS(seconds: number) {
   return new Date(seconds * 1000).toISOString().slice(11, 19)
 }
+
+export function isYoutubeLink(link: string) {
+  return (
+    link.startsWith('https://youtube.com') ||
+    link.startsWith('https://www.youtube.com') ||
+    link.startsWith('http://youtube.com') ||
+    link.startsWith('http://www.youtube.com')
+  )
+}
