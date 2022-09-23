@@ -2,7 +2,7 @@ export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     title:
-      'Easy video downloader - Download your favourite video as MP4 or MP3 easy and fast or download only part of an video!',
+      'Easy video downloader - Download your favourite video as MP4 or MP3 easy and fast',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
