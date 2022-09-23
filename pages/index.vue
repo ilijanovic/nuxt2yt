@@ -16,11 +16,11 @@
           <Regular @click.native="check" :disabled="loading" :loading="loading">Check</Regular>
         </div>
         <transition name="popin">
-          <div class="flex gap-2" v-if="thumbnail">
-            <img :src="thumbnail" class="w-full max-w-xs object-cover" />
+          <div class="flex md:flex-row flex-col gap-2" v-if="thumbnail">
+            <img :src="thumbnail" class="w-full md:max-w-xs object-cover" />
             <div class="flex flex-col gap-2">
-              <Regular @click.native="mp3" class="block">Download Mp3</Regular>
-              <Regular @click.native="mp4" class="block">Download Mp4</Regular>
+              <Regular :disabled="loadMp3" @click.native="mp3" class="block">Download Mp3</Regular>
+              <Regular :disabled="loadMp4" @click.native="mp4" class="block">Download Mp4</Regular>
             </div>
           </div>
         </transition>
@@ -125,6 +125,8 @@ export default Vue.extend({
       loading: false,
       thumbnail: '',
       list: false,
+      loadMp3: false,
+      loadMp4: false,
       max: 10,
       link: '',
       links: [
@@ -191,6 +193,17 @@ export default Vue.extend({
       })
     },
     async mp4(event: any, link: string) {
+      this.loadMp4 = true
+
+      this.$store.commit("SET_NOTIFICATION", {
+        text: "Your request is being processed, it will take a few seconds",
+        show: true
+      })
+      setTimeout(() => {
+        this.$store.commit("SET_NOTIFICATION", {
+          show: false
+        })
+      }, 5000);
       //@ts-ignore
       this.$ga.event({
         eventCategory: 'category',
@@ -205,9 +218,23 @@ export default Vue.extend({
         }
         a.href = '/api/download/' + link + '/' + 'mp4'
         a.click()
-      } catch (err) { }
+      } catch (err) { } finally {
+        setTimeout(() => {
+          this.loadMp4 = false
+        }, 5000);
+      }
     },
     async mp3(event: any, link: string) {
+      this.loadMp3 = true
+      this.$store.commit("SET_NOTIFICATION", {
+        text: "Your request is being processed, it will take a few seconds",
+        show: true
+      })
+      setTimeout(() => {
+        this.$store.commit("SET_NOTIFICATION", {
+          show: false
+        })
+      }, 5000);
       //@ts-ignore
       this.$ga.event({
         eventCategory: 'category',
@@ -222,11 +249,14 @@ export default Vue.extend({
         } else {
           link = encodeURIComponent(link)
         }
-        console.log(link)
         a.href = '/api/download/' + link + '/' + 'mp3'
         a.click()
         document.removeChild(a)
-      } catch (err) { }
+      } catch (err) { } finally {
+        setTimeout(() => {
+          this.loadMp3 = false
+        }, 5000);
+      }
     },
     async check() {
       this.loading = true
