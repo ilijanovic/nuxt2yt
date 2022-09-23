@@ -109,7 +109,7 @@ export default Vue.extend({
   layout: 'default',
   head() {
     return {
-      title: "Easy video downloader - Download your favourite video as MP4 or MP3 easy and fast",
+      title: "Easy video downloader - Download your favourite video as MP4 or MP3 easy and fast or download only part of an video!",
 
       meta: [
 

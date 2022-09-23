@@ -50,13 +50,13 @@ export default Vue.extend({
     layout: 'default',
     head() {
         return {
-            title: "Easy video downloader - Download your favourite video as MP4 or MP3 easy and fast",
+            title: "Easy video downloader - Download your favourite video as MP4 or MP3 easy and fast or download only part of an video!",
 
             meta: [
                 {
                     hid: 'description',
                     name: 'description',
-                    content: 'Use our free tool to download any YouTube video you want. Download MP4 or MP3 youtube videos for free'
+                    content: 'Use our free tool to download any YouTube video you want. Download MP4 or MP3 youtube videos for free. You can download an single video or an list up to 10. You can also download an part of an video with our cutter tool!'
                 }]
         }
     },

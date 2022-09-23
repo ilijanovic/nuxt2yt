@@ -1,11 +1,17 @@
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: 'ytnuxt2',
+    title:
+      'Easy video downloader - Download your favourite video as MP4 or MP3 easy and fast or download only part of an video!',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: '' },
+      {
+        hid: 'description',
+        name: 'description',
+        content:
+          'Use our free tool to download any YouTube video you want. Download MP4 or MP3 youtube videos for free. You can download an single video or an list up to 10. You can also download an part of an video with our cutter tool!',
+      },
       { name: 'format-detection', content: 'telephone=no' },
     ],
     script: [
