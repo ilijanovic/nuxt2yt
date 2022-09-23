@@ -34,6 +34,8 @@ export function toHHMMSS(seconds: number) {
 export function isYoutubeLink(link: string) {
   return (
     link.startsWith('https://youtube.com') ||
+    link.startsWith('https://youtu.be') ||
+    link.startsWith('https://wwww.youtu.be') ||
     link.startsWith('https://www.youtube.com') ||
     link.startsWith('http://youtube.com') ||
     link.startsWith('http://www.youtube.com')
