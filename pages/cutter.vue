@@ -98,6 +98,13 @@ export default Vue.extend({
             }
         },
         async download(event: any, link: string) {
+            //@ts-ignore
+            this.$ga.event({
+                eventCategory: 'category',
+                eventAction: 'action',
+                eventLabel: 'download_cutted_video',
+                eventValue: 1
+            })
             this.$store.commit("SET_NOTIFICATION", {
                 text: "Your request is being processed, it will take a few seconds",
                 show: true
@@ -117,6 +124,15 @@ export default Vue.extend({
             } catch (err) { }
         },
         async check() {
+
+            //@ts-ignore
+            this.$ga.event({
+                eventCategory: 'category',
+                eventAction: 'action',
+                eventLabel: 'check_video_cutter',
+                eventValue: 1
+            })
+
             this.loading = true
 
             try {

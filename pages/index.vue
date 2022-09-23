@@ -141,7 +141,15 @@ export default Vue.extend({
     }
   },
   methods: {
+
     remove(l: any) {
+      //@ts-ignore
+      this.$ga.event({
+        eventCategory: 'category',
+        eventAction: 'action',
+        eventLabel: 'remove_list_item',
+        eventValue: 1
+      })
       let index = this.links.findIndex(link => link.key === l.key)
 
       if (index !== -1) {
@@ -161,6 +169,13 @@ export default Vue.extend({
       return result
     },
     async downloadList() {
+      //@ts-ignore
+      this.$ga.event({
+        eventCategory: 'category',
+        eventAction: 'action',
+        eventLabel: 'downloadList',
+        eventValue: 1
+      })
       for (let i = 0; i < this.links.length; i++) {
         await new Promise((res) => setTimeout(res, 2000))
         let link = this.links[i]
@@ -184,6 +199,13 @@ export default Vue.extend({
       }
     },
     add() {
+      //@ts-ignore
+      this.$ga.event({
+        eventCategory: 'category',
+        eventAction: 'action',
+        eventLabel: 'add_item_to_list',
+        eventValue: 1
+      })
       this.links.push({
         link: '',
         key: this.makeid(10),
