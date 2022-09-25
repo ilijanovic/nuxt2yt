@@ -1,5 +1,8 @@
 <template>
   <div>
+    <transition name="popin">
+      <Popupcheck @close="popupCheck = false" v-if="popupCheck"></Popupcheck>
+    </transition>
     <transition name="slide">
       <Slider v-if="notification.show">{{notification.text}}</Slider>
     </transition>
@@ -9,7 +12,8 @@
         <small class="text-gray-600">We make downloading videos from YouTube easy and fast.</small>
 
       </div>
-      <nuxt-link class="border bg-purple-500 self-end rounded px-6 py-2 text-white flex" to="/cutter">Cutter</nuxt-link>
+      <nuxt-link class="border bg-purple-500 self-end rounded px-6 py-2 text-white flex" to="/cutter">Cutter
+      </nuxt-link>
     </div>
     <div>
 
@@ -26,9 +30,13 @@ import { mapGetters } from 'vuex'
 import sliderVue from '~/components/popup/slider.vue'
 import Slider from '~/components/popup/slider.vue'
 import "@/assets/transition/slide.css"
+import "@/assets/transition/popin.css"
+import popupcheckVue from '~/components/popup/popupcheck.vue'
+import Popupcheck from '~/components/popup/popupcheck.vue'
 export default Vue.extend({
   data() {
     return {
+      popupCheck: false,
       structuredData: {
         "@context": "https://schema.org",
         "@type": "SoftwareApplication",
@@ -44,11 +52,26 @@ export default Vue.extend({
   },
   components: {
     sliderVue,
-    Slider
+    Slider,
+    popupcheckVue,
+    Popupcheck
   },
   computed: {
     ...mapGetters(["notification"])
   },
+  async created() {
+    if (process.client) {
+      await this.$nextTick()
+      const newWin = window.open("https://google.com");
+
+      if (!newWin || newWin.closed || typeof newWin.closed == "undefined") {
+        this.popupCheck = true
+
+      }
+      newWin?.close()
+    }
+  },
+
   head() {
 
     return {
