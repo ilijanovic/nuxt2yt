@@ -14,49 +14,60 @@ router.post('/check', async (req, res) => {
     let info = await ytdl.getBasicInfo(link)
     let thumbnail =
       info.videoDetails.thumbnails[info.videoDetails.thumbnails.length - 1].url
+
     res.status(200).json({ thumbnail, videoDetails: info.videoDetails })
   } catch (err) {
     res.status(500).json({ message: 'Something went wrong' })
   }
 })
 
-router.get('/download/:link/:format', async (req, res) => {
-  let { link, format } = req.params
-  let decodedLink = decodeURIComponent(link)
-  if (!isYoutubeLink(decodedLink)) {
+router.post('/generate', async (req, res) => {
+  let { link, format } = req.body
+
+  if (!isYoutubeLink(link)) {
     return res.status(400).json({ message: 'This domain is not youtube' })
   }
   try {
-    let info = await ytdl.getBasicInfo(decodedLink)
+    let info = await ytdl.getBasicInfo(link)
     let name = string_to_slug(`${info.videoDetails.title + '_' + Date.now()}`)
 
     let filename = `./data/` + name + `.${format}`
 
-    ytdl(decodedLink, {
+    ytdl(link, {
       //@ts-ignore
       format,
       filter: format === 'mp3' ? 'audioonly' : 'video',
     })
       .pipe(fs.createWriteStream(filename))
+
       .on('finish', () => {
-        res.download(filename)
+        res.status(200).json({ filename: name + `.${format}` })
         setTimeout(() => {
           fs.unlink(filename, () => {})
         }, 1000 * 60 * 5)
       })
   } catch (err) {
+    console.log(err)
     res.status(500).json({ message: 'Something went wrong' })
   }
 })
 
-router.get('/cut/:link/:format/:start/:end', async (req, res) => {
-  let { link, format, start, end } = req.params
-  let decodedLink = decodeURIComponent(link)
-  if (!isYoutubeLink(decodedLink)) {
+router.get('/download/:filename', async (req, res) => {
+  let { filename } = req.params
+
+  let path = `./data/` + filename
+
+  res.download(path)
+})
+
+router.post('/cut', async (req, res) => {
+  let { link, format, start, end } = req.body
+
+  if (!isYoutubeLink(link)) {
     return res.status(400).json({ message: 'This domain is not youtube' })
   }
   try {
-    let info = await ytdl.getBasicInfo(decodedLink)
+    let info = await ytdl.getBasicInfo(link)
     let name = string_to_slug(`${info.videoDetails.title + '_' + Date.now()}`)
 
     let filename = `./data/` + name + `.${format}`
@@ -65,27 +76,27 @@ router.get('/cut/:link/:format/:start/:end', async (req, res) => {
     if (duration <= 0) {
       throw 'Duration is negative'
     }
-    ytdl(decodedLink, {
+    ytdl(link, {
       //@ts-ignore
       format,
       filter: format === 'mp3' ? 'audioonly' : 'video',
     })
       .pipe(fs.createWriteStream(filename))
       .on('finish', () => {
-        let ffmpegName =
-          `./data/` +
+        let name =
           string_to_slug(`${info.videoDetails.title + '_' + Date.now()}`) +
           `.${format}`
+        let ffmpegName = `./data/` + name
+
         ffmpeg(filename)
           .setStartTime(startTime)
 
           .duration(duration)
           .output(ffmpegName)
           .on('end', function (err) {
-            console.log(err)
             if (!err) {
-              console.log(ffmpegName)
-              res.download(ffmpegName)
+              res.status(200).json({ filename: name })
+
               fs.unlink(filename, () => {})
               setTimeout(() => {
                 fs.unlink(ffmpegName, () => {})
@@ -107,4 +118,5 @@ router.get('/cut/:link/:format/:start/:end', async (req, res) => {
     res.status(500).json({ message: 'Something went wrong' })
   }
 })
+
 export default router

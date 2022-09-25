@@ -12,6 +12,12 @@
                         <img :src="thumbnail" class="w-full max-w-xs object-cover" />
                         <div class="flex flex-col gap-2">
                             <p class="text-gray-600">Please type in your start end in seconds</p>
+                            <div>
+                                <i @click="format = 'mp3'" :class="{ active: format === 'mp3' }"
+                                    class="fa-solid fa-volume-high border hover:bg-gray-100 rounded p-2 cursor-pointer"></i>
+                                <i @click="format = 'mp4'" :class="{ active: format === 'mp4' }"
+                                    class="fa-solid fa-video border hover:bg-gray-100 rounded p-2 cursor-pointer"></i>
+                            </div>
                             <div class="flex gap-2">
 
                                 <div>
@@ -24,7 +30,8 @@
                                 </div>
 
                             </div>
-                            <Regular @click.native="download" class="block">Download</Regular>
+                            <Regular @click.native="download" :disabled="cutting" :loading="cutting" class="block">
+                                Download</Regular>
                         </div>
                     </div>
                 </transition>
@@ -52,6 +59,8 @@ export default Vue.extend({
     data() {
         return {
             loading: false,
+            cutting: false,
+            format: "mp4",
             thumbnail: '',
             list: false,
             max: 10,
@@ -87,6 +96,7 @@ export default Vue.extend({
             }
         },
         async download(event: any, link: string) {
+            this.cutting = true
             //@ts-ignore
             this.$ga.event({
                 eventCategory: 'category',
@@ -104,13 +114,20 @@ export default Vue.extend({
                 })
             }, 5000);
             try {
+                let result = await this.$axios.$post("/api/cut", {
+                    link: this.link,
+                    format: this.format,
+                    start: this.start,
+                    end: this.end
+                })
                 let a = document.createElement('a')
-                if (!link) {
-                    link = encodeURIComponent(this.link)
-                }
-                a.href = '/api/cut/' + link + '/' + 'mp4' + "/" + this.start + "/" + this.end
+                a.target = "_blank"
+                a.href = '/api/download/' + result.filename
                 a.click()
-            } catch (err) { }
+            } catch (err) { } finally {
+
+                this.cutting = false
+            }
         },
         async check() {
 

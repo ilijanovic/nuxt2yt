@@ -4,7 +4,7 @@
 /* .slide-leave-active below version 2.1.8 */
     {
     opacity: 0;
-    transform: translateX(400px);
+    transform: translateY(-400px);
 }
 
 .slide-leave-active,

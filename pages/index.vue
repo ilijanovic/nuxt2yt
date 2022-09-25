@@ -19,17 +19,23 @@
           <div class="flex md:flex-row flex-col gap-2" v-if="thumbnail">
             <img :src="thumbnail" class="w-full md:max-w-xs object-cover" />
             <div class="flex flex-col gap-2">
-              <Regular :disabled="loadMp3" @click.native="mp3" class="block">Download Mp3</Regular>
-              <Regular :disabled="loadMp4" @click.native="mp4" class="block">Download Mp4</Regular>
+              <Regular :disabled="loadMp3" :loading="loadMp3" @click.native="mp3" class="block">Download Mp3</Regular>
+              <Regular :disabled="loadMp4" :loading="loadMp4" @click.native="mp4" class="block">Download Mp4</Regular>
             </div>
           </div>
         </transition>
       </div>
       <div class="flex flex-col gap-2" key="2" v-else>
+
+        <div class="border p-4 rounded">
+          <p class="text-red-600"><b>Warning: </b>When downloading in parallel, your browser may block pop-ups. You will
+            need to allow this
+            to download multiple files in parallel</p>
+        </div>
         <p class="text-gray-600">Max: {{ links.length }} / {{ max }}</p>
-        <div class="flex flex-col justify-center gap-2">
+        <div class="flex flex-col relative justify-center gap-2">
           <transition-group name="list">
-            <div :key="l.key" v-for="l in links">
+            <div class="w-full bg-white" :key="l.key" v-for="l in links">
               <div class="flex items-center justify-between">
                 <div class="flex w-full flex-col gap-2">
                   <p class="text-gray-600">Title: {{ l.title }}</p>
@@ -38,11 +44,12 @@
                       class="fa-solid fa-volume-high border hover:bg-gray-100 rounded p-2 cursor-pointer"></i>
                     <i @click="l.format = 'mp4'" :class="{ active: l.format === 'mp4' }"
                       class="fa-solid fa-video border hover:bg-gray-100 rounded p-2 cursor-pointer"></i>
-                    <i @click="remove(l)"
-                      class="fa-solid flex fa-trash border ml-auto hover:bg-red-200 active:bg-red-500 rounded p-2 cursor-pointer"></i>
                   </div>
                 </div>
-                <img v-if="l.thumbnail" :src="l.thumbnail" class="h-14 w-14 max-w-xs object-cover" />
+                <img v-if="l.thumbnail" :src="l.thumbnail" class="h-14 block w-14 max-w-xs object-cover" />
+                <i @click="remove(l)"
+                  class="fa-solid ml-2 flex fa-trash border  hover:bg-red-200 active:bg-red-500 rounded p-2 cursor-pointer" />
+
               </div>
               <input @input="getInfo(l)" class="border my-2 block rounded p-3 w-full outline-none" v-model="l.link"
                 type="text" />
@@ -50,7 +57,8 @@
           </transition-group>
         </div>
         <div class="flex justify-between">
-          <Regular @click.native="downloadList">Download</Regular>
+          <Regular :loading="downloadListLoading" :disabled="downloadListLoading" @click.native="downloadList">
+            Download</Regular>
           <i @click="add" :class="{ disabled: links.length >= max }"
             class="fa-solid self-end fa-plus cursor-pointer active:text-white active:bg-purple-500 p-4 border rounded"></i>
         </div>
@@ -103,12 +111,14 @@ import Vue from 'vue'
 import Regular from '~/components/buttons/regular.vue'
 import '@/assets/transition/list.css'
 import '@/assets/transition/popin.css'
+import socket from '@/plugins/socket'
 export default Vue.extend({
 
   name: 'IndexPage',
   layout: 'default',
   data() {
     return {
+      downloadListLoading: false,
       loading: false,
       thumbnail: '',
       list: false,
@@ -116,6 +126,7 @@ export default Vue.extend({
       loadMp4: false,
       max: 10,
       link: '',
+      downloadPromises: [],
       links: [
         {
           link: '',
@@ -156,6 +167,7 @@ export default Vue.extend({
       return result
     },
     async downloadList() {
+      this.downloadListLoading = true
       //@ts-ignore
       this.$ga.event({
         eventCategory: 'category',
@@ -164,14 +176,27 @@ export default Vue.extend({
         eventValue: 1
       })
       for (let i = 0; i < this.links.length; i++) {
-        await new Promise((res) => setTimeout(res, 2000))
         let link = this.links[i]
+        this.link = link.link
         if (link.format === 'mp3') {
-          this.mp3(undefined, link.link)
+
+          let promise = this.mp3()
+          //@ts-ignore
+          this.downloadPromises.push(promise)
         } else {
-          this.mp4(undefined, link.link)
+          let promise = this.mp4()
+          //@ts-ignore
+          this.downloadPromises.push(promise)
         }
       }
+      try {
+        await Promise.all(this.downloadPromises)
+
+      } catch (err) { } finally {
+        this.downloadListLoading = false
+        this.downloadPromises = []
+      }
+
     },
     async getInfo(l: any) {
       try {
@@ -201,7 +226,7 @@ export default Vue.extend({
         format: 'mp3',
       })
     },
-    async mp4(event: any, link: string) {
+    async mp4() {
       this.loadMp4 = true
 
       this.$store.commit("SET_NOTIFICATION", {
@@ -221,19 +246,18 @@ export default Vue.extend({
         eventValue: 1
       })
       try {
-        let a = document.createElement('a')
-        if (!link) {
-          link = encodeURIComponent(this.link)
-        }
-        a.href = '/api/download/' + link + '/' + 'mp4'
-        a.click()
+        let result = await this.$axios.$post("/api/generate", {
+          link: this.link,
+          format: "mp4"
+        })
+        window.open('/api/download/' + result.filename, this.makeid(5))
       } catch (err) { } finally {
-        setTimeout(() => {
-          this.loadMp4 = false
-        }, 5000);
+
+        this.loadMp4 = false
+
       }
     },
-    async mp3(event: any, link: string) {
+    async mp3() {
       this.loadMp3 = true
       this.$store.commit("SET_NOTIFICATION", {
         text: "Your request is being processed, it will take a few seconds",
@@ -252,19 +276,19 @@ export default Vue.extend({
         eventValue: 1
       })
       try {
-        let a = document.createElement('a')
-        if (!link) {
-          link = encodeURIComponent(this.link)
-        } else {
-          link = encodeURIComponent(link)
-        }
-        a.href = '/api/download/' + link + '/' + 'mp3'
-        a.click()
-        document.removeChild(a)
+        let result = await this.$axios.$post("/api/generate", {
+          link: this.link,
+          format: "mp3"
+        })
+        window.open('/api/download/' + result.filename, this.makeid(5))
+        // let a = document.createElement('a')
+        // a.target = "_blank"
+        // a.href = '/api/download/' + result.filename
+        // a.click()
       } catch (err) { } finally {
-        setTimeout(() => {
-          this.loadMp3 = false
-        }, 5000);
+
+        this.loadMp3 = false
+
       }
     },
     async check() {
@@ -286,6 +310,13 @@ export default Vue.extend({
         this.loading = false
       }
     },
+  },
+  mounted() {
+    if (process.client) {
+      socket.on("test", data => {
+        console.log(data)
+      })
+    }
   },
   components: {
     Regular,

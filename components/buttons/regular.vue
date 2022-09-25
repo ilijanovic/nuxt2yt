@@ -1,10 +1,8 @@
 <template>
-  <button
-    :class="{ disabled }"
-    class="px-8 py-2 rounded active:bg-purple-700 bg-purple-500 transition text-white hover:bg-purple-600"
-  >
+  <button :class="{ disabled }"
+    class="px-8 py-2 rounded active:bg-purple-700 bg-purple-500 transition text-white hover:bg-purple-600">
     <slot cy="buttontext" v-if="!loading"></slot>
-    <div cy="buttonloader" v-else class="loader"></div>
+    <div cy="buttonloader" v-else class="loader mx-auto"></div>
   </button>
 </template>
 
