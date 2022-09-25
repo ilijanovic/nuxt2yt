@@ -12,7 +12,9 @@
         <small class="text-gray-600">We make downloading videos from YouTube easy and fast.</small>
 
       </div>
-      <nuxt-link class="border bg-purple-500 self-end rounded px-6 py-2 text-white flex" to="/cutter">Cutter
+      <nuxt-link class="border bg-purple-500 self-end rounded px-6 py-2 ml-auto text-white flex" to="/cutter">Cutter
+      </nuxt-link>
+      <nuxt-link class="border bg-purple-500 self-end rounded px-6 py-2 text-white flex" to="/contact">Contact
       </nuxt-link>
     </div>
     <div>
