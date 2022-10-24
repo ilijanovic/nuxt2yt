@@ -124,7 +124,7 @@ export default Vue.extend({
       list: false,
       loadMp3: false,
       loadMp4: false,
-      max: 10,
+      max: 60,
       link: '',
       downloadPromises: [],
       links: [

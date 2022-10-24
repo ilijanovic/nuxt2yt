@@ -3,6 +3,20 @@ import fs from 'fs'
 import ytdl from 'ytdl-core'
 import { isYoutubeLink, string_to_slug, toHHMMSS } from '../utils'
 import ffmpeg from 'fluent-ffmpeg'
+import childProcess from 'child_process'
+;(function () {
+  var oldSpawn = childProcess.spawn
+  function mySpawn() {
+    console.log('spawn called')
+    console.log(arguments)
+    //@ts-ignore
+    var result = oldSpawn.apply(this, arguments)
+    return result
+  }
+  //@ts-ignore
+  childProcess.spawn = mySpawn
+})()
+
 let router = Router()
 
 router.post('/check', async (req, res) => {
@@ -36,11 +50,16 @@ router.post('/generate', async (req, res) => {
     ytdl(link, {
       //@ts-ignore
       format,
+      quality: 'highest',
       filter: format === 'mp3' ? 'audioonly' : 'video',
     })
       .pipe(fs.createWriteStream(filename))
 
-      .on('finish', () => {
+      .on('finish', async () => {
+        ffmpeg('./data/' + name + `.${format}`)
+          .toFormat('mp3')
+          .save('./music/' + name + `.${format}`)
+
         res.status(200).json({ filename: name + `.${format}` })
         setTimeout(() => {
           fs.unlink(filename, () => {})
@@ -83,9 +102,7 @@ router.post('/cut', async (req, res) => {
     })
       .pipe(fs.createWriteStream(filename))
       .on('finish', () => {
-        let name =
-          string_to_slug(`${info.videoDetails.title + '_' + Date.now()}`) +
-          `.${format}`
+        let name = string_to_slug(`${info.videoDetails.title}`) + `.${format}`
         let ffmpegName = `./data/` + name
 
         ffmpeg(filename)
